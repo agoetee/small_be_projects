@@ -1,10 +1,8 @@
-# Charles Aagoe
-Residence: Teshie 
-Language: Python
-# Enoch Nuertey
-Residence: Nungua
-Language: Java
-# Rabbi Agyei
-Residence: Kumasi
-Language: Python
+# Project `momo_menu`
+
+Soughts to mimic the MTN mobile money USSD platform
+
+Main techniques used:
+- functions
+- match-case
 
