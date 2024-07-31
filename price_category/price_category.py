@@ -2,7 +2,8 @@ import mysql.connector
 import datetime
 import time
 
-myConn = mysql.connector.connect(
+def db_connect():
+    return  mysql.connector.connect(
     host = "localhost",
     username = "root",
     passwd = "1990Charles.",
@@ -10,7 +11,6 @@ myConn = mysql.connector.connect(
 )
 
 
-myCursor = myConn.cursor()
 ts = time.time()
 timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -58,15 +58,22 @@ timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 # describe_products()
 
 def add_category(name):
+    db = db_connect()
+    myCursor = db.cursor()
     ask = "INSERT INTO categories (name) VALUES (%s)"
     give = (name,)
     myCursor.execute(ask, give)
-    myConn.commit()
+    db.commit()
+    print(f"product {name} added successfully")
+    myCursor.close()
+    db.close()
 
 # category = input("Enter new category: ")
 # add_category(category)
 
 def list_categories():
+    db = db_connect()
+    myCursor = db.cursor()
     myCursor.execute("SELECT * FROM categories")
     results = myCursor.fetchall()
     if results:
@@ -75,9 +82,13 @@ def list_categories():
             print(item)
     else:
         print("No categories found")
-# list_categories()
+    myCursor.close()
+    db.close()
+
 
 def add_product(name, price, category_id):
+    db = db_connect()
+    myCursor = db.cursor()
     ask = "INSERT INTO products (name, price, category_id, created_at) VALUES (%s, %s, %s, %s)"
     give = (name, price, category_id, timestamp)
     
@@ -92,13 +103,17 @@ def add_product(name, price, category_id):
     else:
         myCursor.execute(ask, give)
         print(f"Product {name} added successfully")
-        myConn.commit()
+        db.commit()
+    myCursor.close()
+    db.close()
 # prod_name = input("Enter product name: ")
 # price = int(input("Price: "))
 # cat_id = int(input("Enter category id: "))
 # add_product(prod_name, price, cat_id)
 
 def search_product(search_item):
+    db = db_connect()
+    myCursor = db.cursor()
     ask = " SELECT name FROM products WHERE name LIKE %s"
     give = (f"%{search_item}%",)
     myCursor.execute(ask, give)
@@ -110,12 +125,12 @@ def search_product(search_item):
     else:
         print(f"No match for '{search_item}'")
     myCursor.close()
+    db.close()
 
-    
-search = input("Enter search item: ")
-search_product(search)
 
-def search_all_products():
+def list_all_products():
+    db = db_connect()
+    myCursor = db.cursor()
     myCursor.execute("SELECT * FROM products")
     results = myCursor.fetchall()
     if results:
@@ -125,16 +140,61 @@ def search_all_products():
     else:
         print("Nothing to show")
     myCursor.close()
-# search_all_products()
+    db.close()
      
 
 
 
-myCursor.close()
-myConn.close()
+# myCursor.close()
+# myConn.close()
 
 # Next Is to populate table with rows
 
 #Recent: Checked is Category Id entered exists in list of category_ids
 # Currently: Searched all products and also partial search
 # Main menu:
+
+def display_menu():
+    print("Welcome to Price Category App")
+    print("1. Add Category")
+    print("2. List Categories")
+    print("3. Add Product")
+    print("4. Search for Products")
+    print("5. List all products")
+    print("6. Edit Product detail")
+    print("7. Exit")
+
+def main():
+    while True:
+        display_menu()
+        display_menu_input = input("")
+        match display_menu_input:
+            case '1':
+                print("Choice: Add category")
+                category = input("Enter new category: ")
+                add_category(category)
+            case "2":
+                print("Choice List Categories")
+                list_categories()
+            case "3":
+                print("Choice Add Product")
+                prod_name = input("Enter product name: ")
+                price = int(input("Price: "))
+                cat_id = int(input("Enter category id: "))
+                add_product(prod_name, price, cat_id)
+            case "4":
+                print("Choice Search for Product")
+                search = input("Enter search item: ")
+                search_product(search)
+            case '5':
+                print("Choice List all Products")
+                list_all_products()
+            case '6':
+                pass
+            case "7":
+                print("Thank you for using the service.. Bye")
+                break
+            case _:
+                print("Invalid input. Try again")
+
+main()
