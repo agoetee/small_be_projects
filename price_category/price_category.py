@@ -4,10 +4,10 @@ import time
 
 def db_connect():
     return  mysql.connector.connect(
-    host = "localhost",
-    username = "root",
-    passwd = "1990Charles.",
-    database = "alx_be"
+    host = DB_HOST,
+    username = DB_USERNAME,
+    passwd = DB_PASSWORD,
+    database = DB
 )
 
 
