@@ -1,13 +1,17 @@
 import mysql.connector
+import os
 import datetime
 import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def db_connect():
     return  mysql.connector.connect(
-    host = DB_HOST,
-    username = DB_USERNAME,
-    passwd = DB_PASSWORD,
-    database = DB
+    host = os.getenv("DB_HOST"),
+    username = os.getenv("DB_USERNAME"),
+    passwd = os.getenv("DB_PASSWORD"),
+    database = os.getenv("DB_DATABASE")
 )
 
 
